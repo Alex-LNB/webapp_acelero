@@ -60,12 +60,12 @@ t_muestra = 0.2
 def leePuerto(ciclos:int):
     global buffer
     print("crea puerto que lee")
-    #ser_lee = serial.Serial('/dev/ttyUSB0', baudrate = 230400, timeout=1.0)
+    ser_lee = serial.Serial('/dev/ttyUSB0', baudrate = 230400, timeout=1.0) #---
     try:
         for i in range(ciclos):
             time.sleep(0.2)
-            lec, com = b'$ -1.4500, -0.9283,28.40,N9805', b'*9900XY'
-            #lec, com = ser_lee.readline(), ser_lee.readline()
+            #lec, com = b'$ -1.4500, -0.9283,28.40,N9805', b'*9900XY'
+            lec, com = ser_lee.readline(), ser_lee.readline()
             buffer.append([lec.decode('UTF-8'),time.strftime('%X')])
     except serial.SerialException as err:
         print('Error del puerto o tiempo de espera',err)
@@ -73,10 +73,10 @@ def leePuerto(ciclos:int):
     except BaseException as err:
         print('Error al leer el puerto',err)
         print('cierra puerto que lee')
-        #ser_lee.close()
+        ser_lee.close() #---
     else:
         print('cierra puerto que lee')
-        #ser_lee.close()
+        ser_lee.close() #---
 
 def muestreoRapido(ruta:str,t:int):
     global buffer
@@ -85,14 +85,14 @@ def muestreoRapido(ruta:str,t:int):
     nombre = time.strftime('%Y%m%d')+'_rapido.txt'
     leer = threading.Thread(target=leePuerto, args=(ciclos,))
     print("crea puerto que escribe")
-    #ser_cmd = serial.Serial('/dev/ttyUSB0', baudrate = 230400)
+    ser_cmd = serial.Serial('/dev/ttyUSB0', baudrate = 230400) #---
     leer.start()
     for i in range(ciclos):
-        #ser_cmd.write(b'*9900XY\n')
+        ser_cmd.write(b'*9900XY\n') #---
         time.sleep(t_muestra)
     leer.join()
     print('cierra puerto que escribe')
-    #ser_cmd.close()
+    ser_cmd.close() #---
     try:
         archi = open(ruta+nombre,mode='a+')
         for buff in buffer:
@@ -111,14 +111,14 @@ def muestreoSimple(ruta:str):
     nombre = time.strftime('%Y%m%d')+'_simple.txt'
     leer = threading.Thread(target=leePuerto, args=(ciclos,))
     print("crea puerto que escribe")
-    #ser_cmd = serial.Serial('/dev/ttyUSB0', baudrate = 230400)
+    ser_cmd = serial.Serial('/dev/ttyUSB0', baudrate = 230400) #---
     leer.start()
     for i in range(ciclos):
-        #ser_cmd.write(b'*9900XY\n')
+        ser_cmd.write(b'*9900XY\n') #---
         time.sleep(t_muestra)
     leer.join()
     print('cierra puerto que escribe')
-    #ser_cmd.close()
+    ser_cmd.close() #---
     x, y, z= 0.0, 0.0, 0
     for buff in buffer:
         lec = LecturaAcelero.lee_sim(buff[0])
@@ -138,5 +138,6 @@ def muestreoSimple(ruta:str):
 
 
 if __name__ == '__main__':
+    pass
     #muestreoRapido(1)
-    muestreoRapido(10)
+    #muestreoRapido(10)
