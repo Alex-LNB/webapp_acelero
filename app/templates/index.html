@@ -1,0 +1,68 @@
+{% extends 'layout.html' %}
+
+{% block container %}
+<div class="row">
+    <div class="col-12 col-md-12 my-3">
+        <h2>Datos del acelerómetro</h2>
+    </div>
+    <div class="col-8 col-md-6 col-lg-4">
+        <h3>Muestreo Simple</h3>
+    </div>
+    <div class="col-4 col-md-4 col-lg-4 my-2">
+        <a href="{{url_for('.get_muestreo_simple')}}" onclick="$('#barraespera').modal('show')" role="button"
+            class="btn btn-primary btn-sm">
+            Iniciar
+        </a>
+    </div>
+    <div class="col-12 col-md-2 col-lg-4"></div>
+    <div class="col-12 col-md-12">Toma de varias muestras en 1 segundo, se almacena el promedio de las muestras obtenidas.</div>
+    <div class="col-8 col-md-6 col-lg-4">
+        <h3>Muestreo Rapido</h3>
+    </div>
+    <div class="col-4 col-md-4 col-lg-4 my-2">
+        <a href="{{url_for('.get_muestreo_rapido')}}" onclick="$('#barraespera').modal('show')" role="button"
+            class="btn btn-primary btn-sm">
+            Iniciar
+        </a>
+    </div>
+    <div class="col-12 col-md-2 col-lg-4"></div>
+    <div class="col-12 col-md-12">Toma de muestras periodicas en 10 segundos, se almacenan todas las muestras.</div>
+    <div class="col-12 col-md-8 my-3">
+        <h3>Archivo de muestras</h3>
+    </div>
+    <div class="col-12 col-md-10 col-lg-8">
+        <ul class="list-group">
+            {% for itr in dic %}
+            <li class="list-group-item list-group-item-action">
+                {% if itr.is_file() %}
+                <div class="row">
+                    <div class="col-md-7 col-6">{{itr.name}}</div>
+                    <div class="col-md-2 col-2"><a href="{{url_for('.get_file', name_file=itr.name)}}" role="button"
+                            target="_blank" class="btn btn-info btn-sm">Ver</a></div>
+                    <div class="col-md-3 col-4"><a href="{{url_for('.download_file', name_file=itr.name)}}"
+                            role="button" target="_blank" class="btn btn-info btn-sm">Descargar</a></div>
+                </div>
+                {% endif %}
+            </li>
+            {% endfor %}
+            <caption>Ruta: {{fold}}</caption>
+        </ul>
+    </div>
+    <div class="col-12 col-md-2 col-lg-4"></div>
+</div>
+<div class="modal fade" id="barraespera" tabindex="-1" role="dialog" aria-labelledby="barraesperaLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="progress" style="height: 24px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                        aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                        Espere..
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

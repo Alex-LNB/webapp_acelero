@@ -1,0 +1,68 @@
+{% extends 'layout.html' %}
+{% from 'helpers/_helpers.html' import render_field %}
+
+{% block container %}
+<div class="row">
+    <div class="col-12">
+        <h2>Configuración de red Wifi</h2>
+    </div>
+    <div class="col-12">
+        <form method="post">
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+            <div class="form-row">
+                <div class="col-12 col-md-6">
+                    <label> <strong>Interfaz:</strong> {{net.interface}}</label>
+                </div>
+                <div class="col-12 col-md-6">
+                    <label> <strong>Hostname:</strong> {{net.hostname}}</label>
+                </div>
+                <div class="form-group col-12 col-md-6">
+                    {{ render_field(form.ssid, class='form-control') }}
+                </div>
+                <div class="form-group col-12 col-md-6">
+                    {{ render_field(form.password, class='form-control') }}
+                </div>
+                <div class="form-group col-12 col-md-12">
+                    {{ render_field(form.dhcp, class='form-control') }}
+                </div>
+                {% if net.is_dhcp() %}
+                <div class="form-group col-12 col-md-4">
+                    {{ render_field(form.address, class='form-control', disabled='') }}
+                </div>
+                <div class="form-group col-12 col-md-4">
+                    {{ render_field(form.netmask, class='form-control', disabled='') }}
+                </div>
+                <div class="form-group col-12 col-md-4">
+                    {{ render_field(form.gateway, class='form-control', disabled='') }}
+                </div>
+                <div class="form-group col-12 col-md-6">
+                    {{ render_field(form.dns1, class='form-control', disabled='') }}
+                </div>
+                <div class="form-group col-12 col-md-6">
+                    {{ render_field(form.dns2, class='form-control', disabled='') }}
+                </div>
+                {% else %}
+                <div class="form-group col-12 col-md-4">
+                    {{ render_field(form.address, class='form-control') }}
+                </div>
+                <div class="form-group col-12 col-md-4">
+                    {{ render_field(form.netmask, class='form-control') }}
+                </div>
+                <div class="form-group col-12 col-md-4">
+                    {{ render_field(form.gateway, class='form-control') }}
+                </div>
+                <div class="form-group col-12 col-md-6">
+                    {{ render_field(form.dns1, class='form-control') }}
+                </div>
+                <div class="form-group col-12 col-md-6">
+                    {{ render_field(form.dns2, class='form-control') }}
+                </div>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary" name="button">
+                Actualizar
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

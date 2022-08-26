@@ -1,0 +1,72 @@
+{% extends 'layout.html' %}
+{% from 'helpers/_helpers.html' import render_field %}
+
+{% block container %}
+<div class="row">
+    <div class="col-12">
+        <h2>Configuración de Red</h2>
+    </div>
+    <div class="col-12">
+        <h3>Punto de acceso</h3>
+    </div>
+    <div class="col-12">
+        <form method="post">
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+            <div class="form-row">
+                <div class="form-group col-12 col-md-12">
+                    {{ render_field(form.status, class='form-control') }}
+                </div>
+                <div class="form-group col-12 col-md-12">
+                    <button type="submit" class="btn btn-primary" name="button">
+                        Actualizar
+                    </button>
+                </div>
+                <div class="form-group col-12 col-md-6">
+                    {{ render_field(form.ssid, class='form-control', disabled='') }}
+                </div>
+                <div class="form-group col-12 col-md-6">
+                    {{ render_field(form.password, class='form-control', disabled='') }}
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-12">
+        <h3>Conexiones a Internet</h3>
+    </div>
+    <div class="col-12 col-md-6">
+        <ul class="list-group">
+            <li class="list-group-item list-group-item-info">Conexión Ethernet</li>
+            <li class="list-group-item">Interfaz: {{ethe.interface}}</li>
+            {% if ethe.status %}
+            <li class="list-group-item">Dirección IP: {{ethe.address}}</li>
+            <li class="list-group-item">Mascara: {{ethe.netmask}}</li>
+            <li class="list-group-item">Puerta de enlace IP: {{ethe.gateway}}</li>
+            <li class="list-group-item">Tipo: {{ethe.dhcp}}</li>
+            <li class="list-group-item">DNS1: {{ethe.dns1}}</li>
+            <li class="list-group-item">DNS2: {{ethe.dns2}}</li>
+            {% else %}
+            <li class="list-group-item">Sin conexíon</li>
+            {% endif %}
+            <a class="btn btn-outline-info" role="button" href="{{url_for('.setethe')}}">Configurar ethernet</a>
+        </ul>
+    </div>
+    <div class="col-12 col-md-6">
+        <ul class="list-group">
+            <li class="list-group-item list-group-item-info">Conexión Wifi</li>
+            <li class="list-group-item">Interfaz: {{wifi.interface}}</li>
+            {% if wifi.status %}
+            <li class="list-group-item">SSID: {{wifi.ssid}}</li>
+            <li class="list-group-item">Dirección IP: {{wifi.address}}</li>
+            <li class="list-group-item">Mascara: {{wifi.netmask}}</li>
+            <li class="list-group-item">Puerta de enlace IP: {{wifi.gateway}}</li>
+            <li class="list-group-item">Tipo: {{wifi.dhcp}}</li>
+            <li class="list-group-item">DNS1: {{wifi.dns1}}</li>
+            <li class="list-group-item">DNS2: {{wifi.dns2}}</li>
+            {% else %}
+            <li class="list-group-item">Sin conexíon</li>
+            {% endif %}
+            <a class="btn btn-outline-info" role="button" href="{{url_for('.setwifi')}}">Configurar wifi</a>
+        </ul>
+    </div>
+</div>
+{% endblock %}

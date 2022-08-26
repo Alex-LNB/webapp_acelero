@@ -1,0 +1,90 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block title %}
+{{ title }}
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <h1 class="navbar-brand"> Acelerómetro </h1>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                {% if current_user.is_authenticated %}
+                <li class="nav-item active">
+                    <a class="nav-link"
+                        href="{{url_for('.show_user', user_id=current_user.id)}}">{{current_user.username}}</a>
+                </li>
+                {% else %}
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">|-|-|-|</a>
+                </li>
+                {% endif %}
+                <div class="dropdown-divider"></div>
+                {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('.index')}}">Inicio</a>
+                </li>
+                {% if current_user.is_admin %}
+                <div class="dropdown-divider"></div>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('.register')}}">Nuevo usuario</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('.setnet')}}">Config de Red</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('.setdate')}}">Hora y fecha</a>
+                </li>
+                <div class="dropdown-divider"></div>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('.logout')}}">Cerrar sesión</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('.login')}}">Iniciar sesión</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row my-3">
+        <div class="col-md-12 col-md-offset-1">
+            {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages%}
+            {% for category, message in messages %}
+            {% if category == 'error' %}
+            <div class="alert alert-danger" role="alert">
+                {{ message }}
+            </div>
+            {% else %}
+            <div class="alert alert-success" role="alert">
+                {{ message }}
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+    <div class="my-3">
+        {% block container %}
+        {% endblock %}
+    </div>
+    <footer class="footer my-3">
+        <div class="container text-muted text-center">
+            Instituto de Ingeniería UNAM
+        </div>
+    </footer>
+</div>
+{% endblock %}

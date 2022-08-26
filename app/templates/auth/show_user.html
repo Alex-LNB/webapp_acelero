@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+{% from 'helpers/_helpers.html' import render_field %}
+
+{% block container %}
+<div class="row">
+    <div class="col-12">
+        <h2>Usuario: {{user.username}}</h2>
+    </div>
+    <div class="col-12">
+        <div class="table">
+            <table>
+                <caption> Creado {{user.created_at}}</caption>
+                <tbody>
+                    <tr>
+                        <th class="col-6">Nombre</th>
+                        <td class="col-6">{{user.name}}</td>
+                    </tr>
+                    <tr>
+                        <th class="col-6">Correo</th>
+                        <td class="col-6">{{user.email}}</td>
+                    </tr>
+                    <tr>
+                        <th class="col-6">Telefono</th>
+                        <td class="col-6">{{user.phone}}</td>
+                    </tr>
+                    <tr>
+                        <th class="col-6">Administrador</th>
+                        {% if user.is_admin %}
+                        <td class="col-6">Si</td>
+                        {% else %}
+                        <td class="col-6">No</td>
+                        {% endif %}
+                    </tr>
+                    {% if current_user.id == user.id or current_user.is_admin %}
+                    <tr>
+                        <td class="col-6">
+                            <a href="{{url_for('.edit_user', user_id=user.id)}}"
+                                class="btn btn-primary btn-sm">Editar</a>
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

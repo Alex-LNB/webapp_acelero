@@ -1,0 +1,35 @@
+{% extends 'layout.html' %}
+{% from 'helpers/_helpers.html' import render_field %}
+
+{% block container %}
+<div class="row">
+    <div class="col-12">
+        <h2>Hora y Fecha</h2>
+    </div>
+    <div class="col-12">
+        <form method="post">
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+            <div class="form-row">
+                <div class="form-group col-12 col-md-4">
+                    {{ render_field(form.ntp, class='form-control') }}
+                </div>
+                <div class="form-group col-12 col-md-4">
+                    {{ render_field(form.zn, class='form-control') }}
+                </div>
+                {% if dtl.ntp=='yes' %}
+                <div class="form-group col-12 col-md-4">
+                    {{ render_field(form.dt, class='form-control', disabled='') }}
+                </div>
+                {% else %}
+                <div class="form-group col-12 col-md-4">
+                    {{ render_field(form.dt, class='form-control') }}
+                </div>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary" name="button">
+                Actualizar
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
