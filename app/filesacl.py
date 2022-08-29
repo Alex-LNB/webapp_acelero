@@ -53,72 +53,86 @@ class LecturaAcelero():
         return data
 
 import serial, threading, time
+from os import getcwd
 
+puerto = '/dev/ttyUSB0'
+baudios = 230400
 buffer = []
-t_muestra = 0.2
+t_muestra = 0.1
 
 def leePuerto(ciclos:int):
     global buffer
-    print("crea puerto que lee")
-    ser_lee = serial.Serial('/dev/ttyUSB0', baudrate = 230400, timeout=1.0) #---
     try:
+        ser_lee = serial.Serial(puerto, baudrate = baudios, timeout=1.0)
         for i in range(ciclos):
-            time.sleep(0.2)
-            #lec, com = b'$ -1.4500, -0.9283,28.40,N9805', b'*9900XY'
             lec, com = ser_lee.readline(), ser_lee.readline()
             buffer.append([lec.decode('UTF-8'),time.strftime('%X')])
     except serial.SerialException as err:
-        print('Error del puerto o tiempo de espera',err)
+        print('Error del puerto:\n',err)
         buffer.append(['',''])
     except BaseException as err:
-        print('Error al leer el puerto',err)
-        print('cierra puerto que lee')
-        ser_lee.close() #---
+        print('Error al leer el puerto:\n',err)
+        ser_lee.close()
     else:
-        print('cierra puerto que lee')
-        ser_lee.close() #---
+        ser_lee.close()
 
 def muestreoRapido(ruta:str,t:int):
     global buffer
     buffer = []
     ciclos = int(t/t_muestra)
     nombre = time.strftime('%Y%m%d')+'_rapido.txt'
-    leer = threading.Thread(target=leePuerto, args=(ciclos,))
-    print("crea puerto que escribe")
-    ser_cmd = serial.Serial('/dev/ttyUSB0', baudrate = 230400) #---
-    leer.start()
-    for i in range(ciclos):
-        ser_cmd.write(b'*9900XY\n') #---
-        time.sleep(t_muestra)
-    leer.join()
-    print('cierra puerto que escribe')
-    ser_cmd.close() #---
+    try:
+        leer = threading.Thread(target=leePuerto, args=(ciclos,))
+        ser_cmd = serial.Serial(puerto, baudrate = baudios)
+        leer.start()
+        for i in range(ciclos):
+            ser_cmd.write(b'*9900XY\n')
+            time.sleep(t_muestra)
+        leer.join()
+    except serial.SerialException as err:
+        print('Error del puerto:\n',err)
+        return f'Error del puerto:\n{err}'
+    except BaseException as err:
+        print('Error al obtener la muestra:\n',err)
+        ser_cmd.close()
+        return f'Error al obtener la muestra:\n{err}'
+    else:
+        ser_cmd.close()
     try:
         archi = open(ruta+nombre,mode='a+')
         for buff in buffer:
             lec = LecturaAcelero.lee_sim(buff[0])
             archi.write(f"{lec.valX},{lec.valY},{buff[1]}\n")
     except BaseException as err:
-        print('Error',err)
+        print('Error al escribir la muestra:\n',err)
         archi.close()
-        return 'Error al obtener la muestra\n'+err
+        return f'Error al escribir la muestra:\n{err}'
     else:
         archi.close()
         return 'Muestreo rapido exitoso. Archivo: '+nombre
 
 def muestreoSimple(ruta:str):
+    global buffer
+    buffer = []
     ciclos = int(1/t_muestra)
     nombre = time.strftime('%Y%m%d')+'_simple.txt'
-    leer = threading.Thread(target=leePuerto, args=(ciclos,))
-    print("crea puerto que escribe")
-    ser_cmd = serial.Serial('/dev/ttyUSB0', baudrate = 230400) #---
-    leer.start()
-    for i in range(ciclos):
-        ser_cmd.write(b'*9900XY\n') #---
-        time.sleep(t_muestra)
-    leer.join()
-    print('cierra puerto que escribe')
-    ser_cmd.close() #---
+    try:
+        leer = threading.Thread(target=leePuerto, args=(ciclos,))
+        ser_cmd = serial.Serial(puerto, baudrate = baudios)
+        leer.start()
+        for i in range(ciclos):
+            ser_cmd.write(b'*9900XY\n')
+            time.sleep(t_muestra)
+        leer.join()
+    except serial.SerialException as err:
+        print('Error del puerto:\n',err)
+        return f'Error del puerto:\n{err}'
+    except BaseException as err:
+        print('Error al obtener la muestra:\n')
+        ser_cmd.close()
+        return f'Error al obtener la muestra:\n{err}'
+    else:
+        ser_cmd.close()
     x, y, z= 0.0, 0.0, 0
     for buff in buffer:
         lec = LecturaAcelero.lee_sim(buff[0])
@@ -129,15 +143,17 @@ def muestreoSimple(ruta:str):
         archi = open(ruta+nombre,mode='a+')
         archi.write(f"{round(x/z,4)},{round(y/z,4)},{time.strftime('%X')}\n")
     except BaseException as err:
-        print('Error',err)
+        print('Error al escribir la muestra:\n',err)
         archi.close()
-        return 'Error al obtener la muestra\n'+err
+        return f'Error al escribir la muestra:\n{err}'
     else:
         archi.close()
         return 'Muestreo simple exitoso. Archivo: '+nombre
 
-
 if __name__ == '__main__':
-    pass
-    #muestreoRapido(1)
-    #muestreoRapido(10)
+    print(muestreoRapido(getcwd()+'/',2))
+    print(muestreoRapido(getcwd()+'/',5))
+    print(muestreoRapido(getcwd()+'/',10))
+    print(muestreoSimple(getcwd()+'/'))
+    print(muestreoSimple(getcwd()+'/'))
+    print(muestreoSimple(getcwd()+'/'))

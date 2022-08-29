@@ -48,8 +48,8 @@ class Network():
             dns1, dns2 = '', ''
         if wifi:
             sub4 = subprocess.run(f'/bin/cat /etc/netplan/set-network-wifi.yaml | /bin/grep "\\""', shell=True, capture_output=True, text=True)
-            buff = sub4.stdout.strip().split()
-            ssid, password = buff[0][1:-2], buff[2][1:-1]
+            buff = sub4.stdout.strip().split("\n")
+            ssid, password = buff[0].strip(" :\""), buff[1].split()[1].strip("\"")
         else:
             ssid, password = '', ''
         net = Network(interface=interface,hostname=hostname,address=address,netmask=netmask,gateway=gateway,dhcp=dhcp,dns1=dns1,dns2=dns2,status=True,ssid=ssid,password=password)
