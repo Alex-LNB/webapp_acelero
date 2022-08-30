@@ -112,13 +112,13 @@ def get_muestreo_simple():
 def setdate():
     if not current_user.is_admin:
         flash('No tiene permisos de administrador')
-        redirect(url_for('.lista'))
+        redirect(url_for('.index'))
     dtl = Time_Local.get_timelocal()
     form = DatetimeForm(request.form, obj=dtl)
     if request.method == 'POST' and form.validate():
         msj = Time_Local.set_timelocal(form.ntp.data,form.dt.data,form.zn.data)
         flash(f'{msj}')
-        return redirect(url_for('.lista'))
+        return redirect(url_for('.index'))
     return render_template('config/setdate.html', title='Datetime', form=form, dtl=dtl)
 
 @page.route('/setnet', methods=['GET','POST'])
@@ -126,7 +126,7 @@ def setdate():
 def setnet():
     if not current_user.is_admin:
         flash('No tiene permisos de administrador')
-        redirect(url_for('.lista'))
+        redirect(url_for('.index'))
     ap = AccessPoint.get_ap()
     form = ApForm(request.form, obj=ap)
     ethe = Network.get_net(interface=interface['ether'])
@@ -135,7 +135,7 @@ def setnet():
         buff = AccessPoint.set_ap(form.status.data)
         y, z= Network.apply_netplan()
         flash(f'{buff} - {y}')
-        return redirect(url_for('.lista'))
+        return redirect(url_for('.index'))
     return render_template('config/setnet.html', title='Network', form=form, ethe=ethe, wifi=wifi)
 
 @page.route('/setnet/ethernet', methods=['GET','POST'])
@@ -143,7 +143,7 @@ def setnet():
 def setethe():
     if not current_user.is_admin:
         flash('No tiene permisos de administrador')
-        redirect(url_for('.lista'))
+        redirect(url_for('.index'))
     net = Network.get_net(interface=interface['ether'])
     form = NetworkForm(request.form, obj=net)
     if request.method == 'POST' and form.validate():
@@ -154,10 +154,10 @@ def setethe():
         if x == 0:
             y, z= Network.apply_netplan()
             flash(f'Configuracion de red actualizada - {y}')
-            return redirect(url_for('.lista'))
+            return redirect(url_for('.index'))
         else:
-            flash(f'Fallo la configuracion de red - {y}','error')
-            return redirect(url_for('.lista'))
+            flash(f'Fallo la configuracion de red - {x}','error')
+            return redirect(url_for('.index'))
     return render_template('config/setethe.html', title='Ethernet', net=net, form=form)
 
 @page.route('/setnet/wifi', methods=['GET','POST'])
@@ -165,7 +165,7 @@ def setethe():
 def setwifi():
     if not current_user.is_admin:
         flash('No tiene permisos de administrador')
-        redirect(url_for('.lista'))
+        redirect(url_for('.index'))
     net = Network.get_net(interface=interface['wifi'],wifi=True)
     form = NetworkForm(request.form, obj=net)
     if request.method == 'POST' and form.validate():
@@ -176,17 +176,8 @@ def setwifi():
         if x == 0:
             y, z= Network.apply_netplan()
             flash(f'Configuracion de red actualizada - {y}')
-            return redirect(url_for('.lista'))
+            return redirect(url_for('.index'))
         else:
-            flash(f'Fallo la configuracion de red - {y}','error')
-            return redirect(url_for('.lista'))
+            flash(f'Fallo la configuracion de red - {x}','error')
+            return redirect(url_for('.index'))
     return render_template('config/setwifi.html', title='Wifi', net=net, form=form)
-
-
-
-
-
-
-
-
-
